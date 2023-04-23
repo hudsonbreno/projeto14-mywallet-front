@@ -1,21 +1,20 @@
 import styled from "styled-components"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import MyWalletLogo from "../components/MyWalletLogo"
+import { useState } from "react"
+import axios from "axios"
 
-export default function SignInPage() {
+export default function SignInPage({ setToken }) {
 
-
+  const [form, setForm] = useState({ email: "", password: "" })
+  const navigate = useNavigate()
   
   function logar(event){
     event.preventDefault();
-    let inputDados= {
-      email: email,
-      password: senha
-    }
 
-    const promise = axios.post(URL, dados)
-    promise.then(resposta =>{
-      console.log("enviado com sucesso")
+    const promise = axios.post("http://localhost:5000/", form)
+    promise.then(res =>{
+      setToken(res.data)
       navigate("/home")
     })
   }
@@ -25,18 +24,17 @@ export default function SignInPage() {
       <form onSubmit={logar}>
         <MyWalletLogo/>
         <input
-          value={email}
-          data-test="client-name"
+          value={form.email}
           placeholder="E-mail" 
           type="email"
-          onChange={e=>setNome(e.target.value)}
+          onChange={e=>setForm({...form, email: e.target.value})}
           required/>
 
         <input 
-          value={senha}
+          value={form.password}
           placeholder="Senha" 
           type="password"
-          autocomplete="new-password"
+          onChange={e=>setForm({...form, password:e.target.value})}
           required/>
         <button type="submit" data-test="">Entrar</button>
       </form>

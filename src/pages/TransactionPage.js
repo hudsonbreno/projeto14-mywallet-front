@@ -4,7 +4,7 @@ export default function TransactionsPage() {
   return (
     <TransactionsContainer>
       <h1>Nova TRANSAÇÃO</h1>
-      <form onSubmit={formulario}>
+      <form>
         <input placeholder="Valor" type="text"/>
         <input placeholder="Descrição" type="text" />
         <button type="submit" data-test="">Salvar TRANSAÇÃO</button>

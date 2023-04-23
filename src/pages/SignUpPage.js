@@ -1,37 +1,54 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import MyWalletLogo from "../components/MyWalletLogo"
+import { useState } from "react"
+import axios from "axios"
 
 export default function SignUpPage() {
-  function formulario(event){
+  
+  const [ form, setForm ] = useState({ nome:"", email:"" , password:"", isPassword:"" })
+  const navigate = useNavigate()
+
+  function cadastrar(event){
     event.preventDefault()
-    let inputDadosCadastro={
-      nome: nome,
-      email:email,
-      password:password
-    }
-  }
+
+    const promise = axios.post("http://localhost:5000/", form)
+    promise.then(resposta =>{
+      console.log("enviado com sucesso")
+      navigate("/")
+    })
+   }
 
   return (
     <SingUpContainer>
-      <form>
+      <form onSubmit={cadastrar}>
         <MyWalletLogo />
         <input 
-          value={nome}
+          value={form.nome}
           placeholder="Nome"
           type="text"
+          onChange={e=>setForm({...form, nome:e.target})}
           />
         <input 
+          value={form.email}
           placeholder="E-mail" 
-          type="email" />
+          type="email" 
+          onChange={e=>setForm({...form, email:e.target})}
+          />
         <input 
+          value={form.password}
           placeholder="Senha" 
           type="password" 
-          autocomplete="new-password" />
+          autocomplete="new-password" 
+          onChange={e=>setForm({...form, password:e.target})}
+          />
         <input 
+          value={form.isPassword}
           placeholder="Confirme a senha" 
           type="password" 
-          autocomplete="new-password" />
+          autocomplete="new-password" 
+          onChange={e=>setForm({...form, isPassword:e.target})}
+          />
         <button type="submit" data-test="">Cadastrar</button>
       </form>
 
