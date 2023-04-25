@@ -4,7 +4,7 @@ import MyWalletLogo from "../components/MyWalletLogo"
 import { useState } from "react"
 import axios from "axios"
 
-export default function SignUpPage() {
+export default function SignUpPage({ setNome }) {
   
   const [ form, setForm ] = useState({ nome:"", email:"" , password:"", isPassword:"" })
   const navigate = useNavigate()
@@ -12,11 +12,13 @@ export default function SignUpPage() {
   function cadastrar(event){
     event.preventDefault()
 
-    const promise = axios.post("http://localhost:5000/", form)
-    promise.then(resposta =>{
-      console.log("enviado com sucesso")
+    const promise = axios.post("http://localhost:5000/cadastro", form)
+    promise.then(res =>{
+      console.log("cadastrado com sucesso")
       navigate("/")
     })
+    .catch(err=>
+      alert(err.response.data))
    }
 
   return (
@@ -27,27 +29,25 @@ export default function SignUpPage() {
           value={form.nome}
           placeholder="Nome"
           type="text"
-          onChange={e=>setForm({...form, nome:e.target})}
+          onChange={e=>setForm({...form, nome:e.target.value})}
           />
         <input 
           value={form.email}
           placeholder="E-mail" 
           type="email" 
-          onChange={e=>setForm({...form, email:e.target})}
+          onChange={e=>setForm({...form, email:e.target.value})}
           />
         <input 
           value={form.password}
           placeholder="Senha" 
           type="password" 
-          autocomplete="new-password" 
-          onChange={e=>setForm({...form, password:e.target})}
+          onChange={e=>setForm({...form, password:e.target.value})}
           />
         <input 
           value={form.isPassword}
           placeholder="Confirme a senha" 
           type="password" 
-          autocomplete="new-password" 
-          onChange={e=>setForm({...form, isPassword:e.target})}
+          onChange={e=>setForm({...form, isPassword:e.target.value})}
           />
         <button type="submit" data-test="">Cadastrar</button>
       </form>

@@ -4,9 +4,9 @@ import MyWalletLogo from "../components/MyWalletLogo"
 import { useState } from "react"
 import axios from "axios"
 
-export default function SignInPage({ setToken }) {
+export default function SignInPage({ setToken, setNome }) {
 
-  const [form, setForm] = useState({ email: "", password: "" })
+  const [form, setForm] = useState({ email: "", password: ""})
   const navigate = useNavigate()
   
   function logar(event){
@@ -14,9 +14,12 @@ export default function SignInPage({ setToken }) {
 
     const promise = axios.post("http://localhost:5000/", form)
     promise.then(res =>{
-      setToken(res.data)
+      setNome(res.data.nome)
+      setToken(res.data.token)
       navigate("/home")
     })
+    .catch(err=>
+      alert(err.response.data))
   }
   
   return (

@@ -1,12 +1,46 @@
 import styled from "styled-components"
+import { useState } from "react"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
-export default function TransactionsPage() {
+export default function TransactionsPage({ token, tipo }) {
+
+  const [ form, setForm ] = useState({ valor: "", descricao: "" })
+  const navigate = useNavigate()
+
+  function criarTarefa(event){
+    event.preventDefault();
+    console.log(token)
+    const promise = axios.post(`http://localhost:5000/nova-transicao/:${tipo}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+       },
+    })
+    promise.then(res=>{
+      navigate("/home")
+    })
+    .catch(err=>
+      alert(err.response.data))
+  }
+
   return (
     <TransactionsContainer>
-      <h1>Nova TRANSAÇÃO</h1>
-      <form>
-        <input placeholder="Valor" type="text"/>
-        <input placeholder="Descrição" type="text" />
+      <h1>Nova {tipo}</h1>
+      <form onSubmit={criarTarefa}>
+        <input 
+        value={ form.valor }
+        placeholder="Valor" 
+        type="text"
+        required
+        onChange={e=>setForm({...form, valor:e.target.value})}
+        />
+        <input 
+        value={ form.descricao }
+        placeholder="Descrição" 
+        type="text"
+        required
+        onChange={e=>setForm({...form, descricao: e.target.value})}
+        />
         <button type="submit" data-test="">Salvar TRANSAÇÃO</button>
       </form>
     </TransactionsContainer>
