@@ -4,7 +4,7 @@ import MyWalletLogo from "../components/MyWalletLogo"
 import { useState } from "react"
 import axios from "axios"
 
-export default function SignInPage({ setToken, setNome }) {
+export default function SignInPage({ token, setToken, setNome }) {
 
   const [form, setForm] = useState({ email: "", password: ""})
   const navigate = useNavigate()
@@ -16,6 +16,7 @@ export default function SignInPage({ setToken, setNome }) {
     promise.then(res =>{
       setNome(res.data.nome)
       setToken(res.data.token)
+      localStorage.setItem("token", res.data.token)
       navigate("/home")
     })
     .catch(err=>

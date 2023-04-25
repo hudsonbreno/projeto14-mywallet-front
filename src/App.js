@@ -10,7 +10,7 @@ export default function App() {
   const [lista, setLista] = useState([]);
   const [token, setToken] = useState("");
   const [nome, setNome] = useState("");
-  const [saldo, setSaldo] = useState("");
+  const [saldo, setSaldo] = useState(0);
   const [tipo, setTipo] = useState("");
 
   return (
@@ -19,7 +19,7 @@ export default function App() {
         <Routes>
           <Route
             path="/"
-            element={<SignInPage setToken={setToken} setNome={setNome} />}
+            element={<SignInPage token={token} setToken={setToken} setNome={setNome} />}
           />
           <Route path="/cadastro" element={<SignUpPage />} />
           <Route
@@ -34,6 +34,7 @@ export default function App() {
                 tipo={tipo}
                 setTipo={setTipo}
                 nome={nome}
+                setToken={setToken}
               />
             }
           />

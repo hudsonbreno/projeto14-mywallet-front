@@ -10,8 +10,7 @@ export default function TransactionsPage({ token, tipo }) {
 
   function criarTarefa(event){
     event.preventDefault();
-    console.log(token)
-    const promise = axios.post(`http://localhost:5000/nova-transicao/:${tipo}`, {
+    const promise = axios.post(`http://localhost:5000/nova-transacao/${tipo}`, form, {
       headers: {
         Authorization: `Bearer ${token}`,
        },

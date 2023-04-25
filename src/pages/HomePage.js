@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { BiExit } from "react-icons/bi";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function HomePage({
@@ -14,15 +14,16 @@ export default function HomePage({
   tipo,
   setTipo,
   token,
+  setToken
 }) {
-
   const navigate = useNavigate()
 
   useEffect(() => {
-  //   // if(localStorageStorage.getItem("user")){
-  //   //   const newUserInfo = JSON.parse(localStorage.getItem("user"))
-  //   //   setUser(newUserInfo)
-  //   // }
+      // if(localStorage.getItem("token")){
+      //   console.log(localStorage.getItem("token"))
+      //   const lsUser = localStorage.getItem("token")
+      //   setToken(lsUser)
+      // }
     const promise = axios.get("http://localhost:5000/home", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -30,57 +31,71 @@ export default function HomePage({
     });
     promise
       .then((res) => {
-        setLista(res);
+        lista = res.data
+        let certo = lista.reverse()
+        setLista(certo);
       })
       .catch((err) => alert(err.response.data));
-  }, {})
+  }, [])
 
   function irPaginaEntrada(event){
     event.preventDefault();
     setTipo("entrada")
-    navigate("/nova-transacao/:entrada")
+    navigate("/nova-transacao/entrada")
   }
 
   function irPaginaSaida(event){
     event.preventDefault()
     setTipo("saida")
-    navigate("/nova-transacao/:saida")
+    navigate("/nova-transacao/saida")
+  }
+
+  function Deslogar(event){
+    event.preventDefault()
+    setToken("")
+    navigate("/")
   }
 
   return (
     <HomeContainer>
       <Header>
         <h1>Olá, {nome}</h1>
-        <BiExit />
+        <BiExit onClick={Deslogar}/>
       </Header>
 
       <TransactionsContainer>
         <ul>
-          {lista !== [] ? (
-            <h1>Você ainda não tem nenhuma transacao</h1>
-          ) : (
-            lista.map((item) => {
-              <ListItemContainer>
-                <div>
-                  <span>{item.data}</span>
-                  <strong>{item.descricao}</strong>
-                </div>
-                <Value color={item.tipo}>${item.valor}</Value>
-              </ListItemContainer>;
-            })
-          )}
-        </ul>
-        <ListItemContainer>
-          <div>
-            <span>sfddsf</span>
-            <strong>sddasd</strong>
-          </div>
-          <Value color={"vermelho"}>$150.00</Value>
-        </ListItemContainer>
+          {
+            lista === undefined? <h1>Você ainda não tem nenhuma transaçao</h1>
+            :
+            (lista.map((item) => (
+              <ListItemContainer key={item.id}>
+              <div>
+                <span>{item.dia}</span>
+                <span>{item.data}</span>
+                <strong>{item.descricao}</strong>
+              </div>
+              <Value color={item.tipo==="entrada"?"positivo":"negativo"}>${item.valor}</Value>
+            </ListItemContainer>
+            )))
+          }
 
+        </ul>
+        
         <article>
           <strong>Saldo</strong>
-          <Value color={saldo.cor}>${saldo}</Value>
+          {
+            lista.data===undefined? 0: 
+            lista.data.forEach(transacao => {
+            if(transacao.tipo==="entrada"){
+              saldo = saldo +parseInt(transacao.valor)
+            }
+            if(transacao.tipo==="saida"){
+              saldo = saldo -parseInt(transacao.valor)
+            }
+            })
+          }
+          <Value color={saldo>0?"positivo":"negativo"} >${saldo}</Value>
         </article>
       </TransactionsContainer>
 
@@ -119,6 +134,7 @@ const Header = styled.header`
 `;
 const TransactionsContainer = styled.article`
   flex-grow: 1;
+  overflow-y: scroll;
   background-color: #fff;
   color: #000;
   border-radius: 5px;
@@ -126,6 +142,9 @@ const TransactionsContainer = styled.article`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  ul{
+    overflow-y: scroll;
+  }
   article {
     display: flex;
     justify-content: space-between;
