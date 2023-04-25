@@ -19,23 +19,25 @@ export default function HomePage({
   const navigate = useNavigate()
 
   useEffect(() => {
-      // if(localStorage.getItem("token")){
-      //   console.log(localStorage.getItem("token"))
-      //   const lsUser = localStorage.getItem("token")
-      //   setToken(lsUser)
-      // }
-    const promise = axios.get("http://localhost:5000/home", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-       },
-    });
-    promise
-      .then((res) => {
-        lista = res.data
-        let certo = lista.reverse()
-        setLista(certo);
-      })
-      .catch((err) => alert(err.response.data));
+      if(token){
+        const promise = axios.get("http://localhost:5000/home", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+           },
+        });
+        promise
+          .then((res) => {
+            lista = res.data
+            let certo = lista.reverse()
+            setLista(certo);
+          })
+          .catch((err) => alert(err.response.data));
+      }
+      else{
+        navigate("/")
+      }
+
+
   }, [])
 
   function irPaginaEntrada(event){
@@ -51,8 +53,7 @@ export default function HomePage({
   }
 
   function Deslogar(event){
-    event.preventDefault()
-    setToken("")
+    localStorage.removeItem("token")
     navigate("/")
   }
 

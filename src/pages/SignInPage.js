@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { Link, useNavigate } from "react-router-dom"
 import MyWalletLogo from "../components/MyWalletLogo"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 
 export default function SignInPage({ token, setToken, setNome }) {
@@ -9,6 +9,14 @@ export default function SignInPage({ token, setToken, setNome }) {
   const [form, setForm] = useState({ email: "", password: ""})
   const navigate = useNavigate()
   
+  useEffect(()=>{
+    const lsUser = localStorage.getItem("token")
+    if(lsUser){
+      setToken(lsUser)
+      navigate("/home") 
+    }
+  })
+
   function logar(event){
     event.preventDefault();
 
@@ -16,7 +24,6 @@ export default function SignInPage({ token, setToken, setNome }) {
     promise.then(res =>{
       setNome(res.data.nome)
       setToken(res.data.token)
-      localStorage.setItem("token", res.data.token)
       navigate("/home")
     })
     .catch(err=>

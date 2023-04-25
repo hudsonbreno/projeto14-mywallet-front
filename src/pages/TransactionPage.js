@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 
@@ -8,6 +8,9 @@ export default function TransactionsPage({ token, tipo }) {
   const [ form, setForm ] = useState({ valor: "", descricao: "" })
   const navigate = useNavigate()
 
+  useEffect(()=>{
+    if(!token) navigate("/")
+  })
   function criarTarefa(event){
     event.preventDefault();
     const promise = axios.post(`http://localhost:5000/nova-transacao/${tipo}`, form, {
